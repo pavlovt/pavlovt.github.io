@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>BraceML · pavlovt</title>
+<meta name="description" content="BraceML is a brace-based HTML template language that compiles to HTML, Svelte 5 and React. Includes an online HTML to BraceML converter.">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../">pavlovt</a>
+    <nav>
+      <a href="../../">Home</a>
+      <a href="../ccdv-f-handbook/">CCDV-F Handbook</a>
+      <a href="../compiled-books/">Compiled Books</a>
+      <a href="./" aria-current="page">BraceML</a>
+      <a href="https://github.com/pavlovt">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>BraceML</h1>
+  <p class="lead"><strong>HTML templates without the boilerplate.</strong> BraceML is a brace-based template language: <code>{ }</code> wraps an element's children, the way SCSS wraps CSS rules. It compiles to plain HTML, Svelte 5 and React at build time, so browsers and frameworks never see it.</p>
+
+  <div class="actions">
+    <a class="button" href="#converter">Convert HTML to BraceML</a>
+    <a class="button secondary" href="https://github.com/pavlovt/braceml">Source on GitHub</a>
+    <a class="button secondary" href="https://github.com/pavlovt/braceml/blob/main/docs/language.md">Language guide</a>
+  </div>
+
+  <h2>No closing tags</h2>
+  <p>In HTML every element is written twice. In BraceML, selectors do the naming and braces do the nesting.</p>
+  <div class="compare">
+    <div>
+      <h3>HTML</h3>
+<pre><code>&lt;nav class="menu"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/shop"&gt;Shop&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/about"&gt;About&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+    </div>
+    <div>
+      <h3>BraceML</h3>
+<pre><code>nav.menu &gt; ul {
+  li &gt; a href=/ 'Home'
+  li &gt; a href=/shop 'Shop'
+  li &gt; a href=/about 'About'
+}</code></pre>
+    </div>
+  </div>
+
+  <h2>One template for Svelte and React</h2>
+  <p>The same control flow compiles to Svelte blocks or to JSX. The React target adds <code>className</code>, <code>key</code> and the rest for you.</p>
+<pre><code>if users.length == 0 {
+  p.muted 'No users yet'
+} else {
+  ul {
+    each users as user (user.id) {
+      li &gt; a href="/users/{user.id}" '{user.name}'
+    }
+  }
+}</code></pre>
+
+  <h2>Features</h2>
+  <ul class="features">
+    <li><strong>Selectors:</strong> <code>tag#id.class</code>, with <code>div</code> as the default tag.</li>
+    <li><strong>Blocks:</strong> <code>if</code>, <code>else if</code>, <code>else</code>, <code>each</code>, <code>await</code>, <code>key</code> and <code>snippet</code>.</li>
+    <li><strong>Components:</strong> a tag that starts with an upper-case letter, such as <code>Card title="Hi"</code>.</li>
+    <li><strong>Mistakes are errors:</strong> unknown lower-case tags and unclosed braces are reported with a line and column, instead of being guessed at like broken HTML.</li>
+    <li><strong>Editor support:</strong> a VS Code extension and a language server with highlighting, completion, live errors and formatting.</li>
+    <li><strong>Tooling:</strong> a formatter, a Prettier plugin, source maps, and an HTML converter.</li>
+  </ul>
+
+  <h2>Get started</h2>
+  <h3>SvelteKit</h3>
+<pre><code>npm i -D @braceml/svelte
+
+// svelte.config.js
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { braceml } from '@braceml/svelte';
+
+export default {
+  preprocess: [braceml(), vitePreprocess()],
+};</code></pre>
+  <h3>React</h3>
+<pre><code>npm i @braceml/react
+
+// vite.config.js
+import react from '@vitejs/plugin-react';
+import { braceml } from '@braceml/react/vite';
+
+export default {
+  plugins: [braceml(), react()],
+};</code></pre>
+  <h3>Command line</h3>
+<pre><code>npx @braceml/cli page.braceml                  # HTML to stdout
+npx @braceml/cli page.braceml -t svelte -o page.svelte
+npx @braceml/cli convert page.html -o page.braceml</code></pre>
+
+  <p>To see it in a real app, look at <a href="https://github.com/pavlovt/brace-store">brace-store</a>, a SvelteKit storefront built twice, once in BraceML and once in HTML, so you can compare them side by side. BraceML grew out of <a href="https://github.com/pavlovt/easy-html">easy-html</a>, and easy-html templates are valid BraceML.</p>
+
+  <h2 id="converter">HTML to BraceML converter</h2>
+  <p>Paste HTML and convert it to BraceML. This runs <a href="https://www.npmjs.com/package/@braceml/convert"><code>@braceml/convert</code></a> in your browser, the same converter as <code>braceml convert</code> on the command line. Nothing is sent to a server.</p>
+
+  <form class="converter" id="converter-form">
+    <div class="panes">
+      <div>
+        <label for="html-input">HTML</label>
+        <textarea id="html-input" spellcheck="false" wrap="off" placeholder="&lt;nav class=&quot;menu&quot;&gt;…&lt;/nav&gt;"></textarea>
+      </div>
+      <div>
+        <label for="braceml-output">BraceML</label>
+        <textarea id="braceml-output" spellcheck="false" wrap="off" readonly></textarea>
+      </div>
+    </div>
+    <div class="options">
+      <button type="submit" id="convert-button" disabled>Convert</button>
+      <button type="button" class="secondary" id="example-button">Load example</button>
+      <button type="button" class="secondary" id="copy-button">Copy BraceML</button>
+      <label><input type="checkbox" id="class-attribute"> Keep classes in a <code>class</code> attribute (for Tailwind)</label>
+    </div>
+    <p class="status" id="status" role="status">Loading the converter…</p>
+  </form>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap"><a href="../../">← All projects</a></div>
+</footer>
+
+<script type="module">
+  const form = document.getElementById('converter-form');
+  const input = document.getElementById('html-input');
+  const output = document.getElementById('braceml-output');
+  const classAttribute = document.getElementById('class-attribute');
+  const convertButton = document.getElementById('convert-button');
+  const status = document.getElementById('status');
+
+  const example = `<nav class="menu">
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/shop">Shop</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+</nav>
+<form id="signup" class="card">
+  <label for="email">Email</label>
+  <input id="email" type="email" required>
+  <button type="submit" class="btn primary">Sign up</button>
+</form>`;
+
+  function setStatus(text, isError = false) {
+    status.textContent = text;
+    status.classList.toggle('error', isError);
+  }
+
+  let htmlToBraceml;
+  try {
+    ({ htmlToBraceml } = await import('https://cdn.jsdelivr.net/npm/@braceml/convert@0.3.0/+esm'));
+    convertButton.disabled = false;
+    setStatus('Ready. Press Convert, or Ctrl+Enter in the HTML box.');
+  } catch (error) {
+    setStatus(`Couldn't load the converter: ${error.message}`, true);
+  }
+
+  function convert() {
+    if (!htmlToBraceml) return;
+    if (!input.value.trim()) {
+      output.value = '';
+      setStatus('Paste some HTML first.');
+      return;
+    }
+    try {
+      output.value = htmlToBraceml(input.value, { classAttribute: classAttribute.checked });
+      setStatus('Converted.');
+    } catch (error) {
+      setStatus(`Couldn't convert this HTML: ${error.message}`, true);
+    }
+  }
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    convert();
+  });
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      convert();
+    }
+  });
+  classAttribute.addEventListener('change', () => {
+    if (output.value) convert();
+  });
+  document.getElementById('example-button').addEventListener('click', () => {
+    input.value = example;
+    convert();
+  });
+  document.getElementById('copy-button').addEventListener('click', async () => {
+    if (!output.value) return setStatus('Nothing to copy yet.');
+    try {
+      await navigator.clipboard.writeText(output.value);
+      setStatus('Copied.');
+    } catch {
+      output.select();
+      setStatus('Select the BraceML and copy it with Ctrl+C.');
+    }
+  });
+</script>
+</body>
+</html>

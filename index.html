@@ -1,143 +1,67 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Personal experiments</title>
-<link rel="stylesheet" href="https://unpkg.com/bootstrap-css-only@4.1.0/css/bootstrap.min.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>pavlovt · Projects</title>
+<meta name="description" content="Projects by pavlovt: the CCDV-F study handbook, compiled technical books on Svelte, SvelteKit and Astro, and the BraceML template language.">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<h1>Convert html to easy html</h1>
-<div class="container">
-	<div class="row">
-		<div class="col">
-			<form id="frm">
-			  <div class="form-group">
-			    <label>Html</label><br>
-			    <textarea name="html" cols="120" rows="15"></textarea>
-			  </div>
-			  <div class="form-group">
-			    <label>Generated easy html</label><br>
-			    <textarea name="ehtml" cols="120" rows="15"></textarea>
-			  </div>
-			  <button type="submit" class="btn btn-primary">Convert</button>
-			</form>			
-		</div>
-	</div>
-</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./">pavlovt</a>
+    <nav>
+      <a href="./" aria-current="page">Home</a>
+      <a href="projects/ccdv-f-handbook/">CCDV-F Handbook</a>
+      <a href="projects/compiled-books/">Compiled Books</a>
+      <a href="projects/braceml/">BraceML</a>
+      <a href="https://github.com/pavlovt">GitHub</a>
+    </nav>
+  </div>
+</header>
 
-<script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js"></script>
-<script src="https://unpkg.com/htmlparser@1.7.7/lib/htmlparser.js"></script>
+<main class="wrap">
+  <h1>Projects</h1>
+  <p class="lead">Books, study material and developer tools I build and maintain. Everything here is open source on GitHub.</p>
 
-<script>
-	$(document).ready(() => {
-		$('#frm').on('submit', function(e) { //use on if jQuery 1.7+
-        e.preventDefault();  //prevent form from submitting
-        submit()
-    });
-		
-	})
+  <div class="cards">
+    <article class="card">
+      <span class="tag">Study handbook · EPUB</span>
+      <h2>CCDV-F Handbook</h2>
+      <p>A three-volume study handbook for the Claude Certified Developer – Foundations exam, with 1,007 practice questions and answer keys.</p>
+      <div class="links">
+        <a href="projects/ccdv-f-handbook/">About the handbook</a>
+        <a href="https://github.com/pavlovt/ccdv-f-handbook">GitHub</a>
+      </div>
+    </article>
 
+    <article class="card">
+      <span class="tag">Technical books · EPUB</span>
+      <h2>Compiled Books</h2>
+      <p>In-depth books on Svelte 5, SvelteKit 3 and Astro 7, a SvelteKit interview-prep course with interactive quizzes, and more.</p>
+      <div class="links">
+        <a href="projects/compiled-books/">About the books</a>
+        <a href="https://github.com/pavlovt/compiled-books">GitHub</a>
+      </div>
+    </article>
 
-	function parser2ehtmlData(parserData) {
-		var res = [], t = {}
-		parserData.forEach(v => {
-			if (v.type == 'text') res.push({text: [v.data]})
-			else {
-				// ignore the type = comment (for now)
-				if (v.type != 'tag') return true;
-				t = {
-					type: 'element',
-					el: v.name,
-					classes: [],
-					attrs: [],
-					content: [],
-				}
+    <article class="card">
+      <span class="tag">Template language · npm</span>
+      <h2>BraceML</h2>
+      <p>HTML templates without the boilerplate. A brace-based template language that compiles to HTML, Svelte 5 and React.</p>
+      <div class="links">
+        <a href="projects/braceml/">About BraceML</a>
+        <a href="projects/braceml/#converter">HTML converter</a>
+        <a href="https://github.com/pavlovt/braceml">GitHub</a>
+      </div>
+    </article>
+  </div>
+</main>
 
-				if (v.attribs) {
-					if (v.attribs.class) {
-						t.classes = v.attribs.class.split(' ')
-						delete v.attribs.class
-					}
-
-					// if (v.attribs.class) t.classes = [v.attribs.class];
-					t.attrs = Object.keys(v.attribs).map(z => {
-						return {lhs: z,  rhs: [v.attribs[z]]};
-					})
-
-				}
-
-				if (v.children) {
-					t.content = parser2ehtmlData(v.children).concat([])
-					// console.log('and the children of '+t.el, t.content)
-				}
-
-				res.push(t)
-			}
-		})
-
-		return res;
-	}
-
-	function submit() {
-		var handler = new Tautologistics.NodeHtmlParser.DefaultHandler(function (error, dom) {
-			if (error)
-				console.log('error', error)
-			else
-				console.log('done', dom)
-		});
-		var str = $('[name=html]').val();
-		console.log('org', str)
-		var parser = new Tautologistics.NodeHtmlParser.Parser(handler);
-		parser.parseComplete(str);
-		var z = parser2ehtmlData(handler.dom);
-		console.log(z)
-
-		// alert(JSON.stringify(handler.dom, null, 2));
-		$('[name=ehtml]').val(htmlElement(z, {}))
-	}
-
-	function htmlElement(data, options) {
-    // console.log('parse data', JSON.stringify(data))
-    
-    let res = '', cls, tmp
-    data.forEach((el) => {
-        el.attrs = el.attrs || [];
-        if (el.space) res += el.space
-        // we have space
-        else if (el.text && el.text[0].replace('/n', '').trim().length == 0) res += el.text.join('')
-        // make sure to escape the single quotes inside the text because the text itself is in single quotes
-        else if (el.text) res += ` '${el.text.join('').replace(/'/g, "\\'")}' `
-        else {
-            if (el.type != 'element') return true;
-            // console.log('parsing element!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', el)
-            
-            tmp = el.attrs.find((v) => v.lhs === 'class')
-            // we may have div.z class="zz zzz"> i.e. we have to join the classes from both places
-            cls = tmp ? tmp.rhs.concat(el.classes).join('.') : el.classes.join('.');
-            // console.log('cls', el.el, el.classes, cls);
-            res += `${el.el}`
-            if (cls.length > 0) res += `.${cls}`
-            else res += ` `
-
-            el.attrs.filter(v => v.lhs !== 'class').forEach(v => {
-                res += ` ${v.lhs}`
-                if (v.rhs.length > 0) {
-                	// has spaces?
-                	if (v.rhs.indexOf(' ') > -1) res += `="${v.rhs.join(' ')}"`
-                	else res += `=${v.rhs.join(' ')}`
-                }
-                
-            })
-            res += ` {`
-            res += htmlElement(el.content, options)
-            res += `}`
-        }
-    })
-
-    return res;
-	}
-</script>
+<footer class="site-footer">
+  <div class="wrap">More on <a href="https://github.com/pavlovt">github.com/pavlovt</a>.</div>
+</footer>
 </body>
-
 </html>

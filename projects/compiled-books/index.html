@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Compiled Books · pavlovt</title>
+<meta name="description" content="In-depth EPUB books on Svelte 5, SvelteKit 3 and Astro 7, and a SvelteKit interview-prep course with interactive quizzes.">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../">pavlovt</a>
+    <nav>
+      <a href="../../">Home</a>
+      <a href="../ccdv-f-handbook/">CCDV-F Handbook</a>
+      <a href="./" aria-current="page">Compiled Books</a>
+      <a href="../braceml/">BraceML</a>
+      <a href="https://github.com/pavlovt">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Compiled Books</h1>
+  <p class="lead">Technical books compiled with Claude, written in Markdown and built into EPUB. They cover Svelte 5, SvelteKit 3 and Astro 7 in depth, and there is a nine-day SvelteKit interview-prep course.</p>
+
+  <div class="actions">
+    <a class="button" href="https://github.com/pavlovt/compiled-books/releases/latest">Download the EPUBs</a>
+    <a class="button secondary" href="https://pavlovt.github.io/compiled-books/books/sveltekit-interview-prep/quiz/quizzes.html">Interview-prep quizzes</a>
+    <a class="button secondary" href="https://github.com/pavlovt/compiled-books">Source on GitHub</a>
+  </div>
+
+  <h2>The books</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Book</th><th>What it covers</th><th>Get it</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><em>Svelte 5 in Depth</em></td>
+          <td>Runes, the compiler and reactivity internals</td>
+          <td><a href="https://github.com/pavlovt/compiled-books/releases/download/v1.0.0/Svelte-5-in-Depth.epub">EPUB</a></td>
+        </tr>
+        <tr>
+          <td><em>SvelteKit 3 in Depth</em></td>
+          <td>Routing, data, remote functions and deployment</td>
+          <td><a href="https://github.com/pavlovt/compiled-books/releases/download/v1.0.0/SvelteKit-3-in-Depth.epub">EPUB</a></td>
+        </tr>
+        <tr>
+          <td><em>Astro 7 in Depth</em></td>
+          <td>Islands, content and the server, with Svelte 5</td>
+          <td><a href="https://github.com/pavlovt/compiled-books/releases/download/v1.0.0/Astro-7-in-Depth-with-Svelte.epub">EPUB</a></td>
+        </tr>
+        <tr>
+          <td><em>SvelteKit Interview Prep</em></td>
+          <td>A nine-day course in Svelte 5, SvelteKit 3 and testing, two hours a day</td>
+          <td><a href="https://github.com/pavlovt/compiled-books/tree/main/books/sveltekit-interview-prep">Source</a></td>
+        </tr>
+        <tr>
+          <td><em>Living Well with Type 2 Diabetes</em></td>
+          <td>A practical guide to the things that matter most</td>
+          <td><a href="https://github.com/pavlovt/compiled-books/tree/main/books/living-well-with-type-2-diabetes">Source</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small">The last two books aren't in a release yet. Build them from source with the commands below.</p>
+
+  <p>Each of the three <em>in Depth</em> books has 20 chapters, a preface, answers to the chapter review questions, six final tests and their answer key.</p>
+
+  <h2>SvelteKit Interview Prep</h2>
+  <p>A study course built on the Svelte 5 and SvelteKit 3 books. It has seven daily lessons with quizzes, two mock interviews, a live-coding playbook with tested drills, three example projects to build with Claude Code, and three final tests.</p>
+  <p>Every quiz and final test is on one <a href="https://pavlovt.github.io/compiled-books/books/sveltekit-interview-prep/quiz/quizzes.html">interactive quiz page</a>, where you can pick a quiz, answer it and check your answers.</p>
+
+  <h2>Build it yourself</h2>
+  <p>Every book is built the same way, with <a href="https://pandoc.org/">pandoc</a> and Python 3:</p>
+  <pre><code>git clone https://github.com/pavlovt/compiled-books
+cd compiled-books
+python build.py --list                # list the books
+python build.py                       # build every book into dist/
+python build.py svelte-5-in-depth     # or just one</code></pre>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap"><a href="../../">← All projects</a></div>
+</footer>
+</body>
+</html>

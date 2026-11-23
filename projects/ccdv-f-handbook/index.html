@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>CCDV-F Handbook · pavlovt</title>
+<meta name="description" content="A three-volume EPUB study handbook for the Claude Certified Developer – Foundations (CCDV-F) exam, with 1,007 practice questions.">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../">pavlovt</a>
+    <nav>
+      <a href="../../">Home</a>
+      <a href="./" aria-current="page">CCDV-F Handbook</a>
+      <a href="../compiled-books/">Compiled Books</a>
+      <a href="../braceml/">BraceML</a>
+      <a href="https://github.com/pavlovt">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>CCDV-F Study Handbook</h1>
+  <p class="lead">A three-volume study handbook for the <strong>Claude Certified Developer – Foundations (CCDV-F)</strong> exam, in EPUB. It has 1,007 practice questions, each with an answer and an explanation.</p>
+
+  <div class="actions">
+    <a class="button" href="https://github.com/pavlovt/ccdv-f-handbook/releases/latest">Download the EPUBs</a>
+    <a class="button secondary" href="https://github.com/pavlovt/ccdv-f-handbook">Source on GitHub</a>
+  </div>
+
+  <h2>The three volumes</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Book</th><th>Contents</th><th>Download</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><em>A Study Handbook for the CCDV-F Exam</em></td>
+          <td>12 chapters across the eight exam domains, chapter questions, a 53-question mock exam, answer keys, a glossary and resources</td>
+          <td><a href="https://github.com/pavlovt/ccdv-f-handbook/releases/download/v1.0.0/CCDV-F_Study_Handbook.epub">EPUB</a></td>
+        </tr>
+        <tr>
+          <td><em>Volume II: Depth in the Heavy Domains</em></td>
+          <td>5 advanced chapters, a 60-question advanced mock exam and answer keys</td>
+          <td><a href="https://github.com/pavlovt/ccdv-f-handbook/releases/download/v1.0.0/CCDV-F_Study_Handbook_Vol2.epub">EPUB</a></td>
+        </tr>
+        <tr>
+          <td><em>Volume III: Twelve Advanced Mock Exams</em></td>
+          <td>12 full-length exams of 53 questions each, answer keys and a guide to reading your results</td>
+          <td><a href="https://github.com/pavlovt/ccdv-f-handbook/releases/download/v1.0.0/CCDV-F_Advanced_Mock_Exams.epub">EPUB</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>How it is checked</h2>
+  <p>A script, <code>preflight.py</code>, checks every question against its answer key. It finds questions with no key entry, duplicate IDs, answers that aren't among the options, answer counts that don't match “Select TWO” or “Select THREE”, and explanations that contradict the key. The v1.0.0 release has 0 defects and 0 warnings.</p>
+
+  <h2>Build it yourself</h2>
+  <p>The books are written in Markdown and built into EPUB with <a href="https://pandoc.org/">pandoc</a> and Python 3:</p>
+  <pre><code>git clone https://github.com/pavlovt/ccdv-f-handbook
+cd ccdv-f-handbook
+python build.py --check</code></pre>
+
+  <p class="muted small">This is a study compilation built from public documentation. It is not affiliated with or endorsed by Anthropic.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap"><a href="../../">← All projects</a></div>
+</footer>
+</body>
+</html>
