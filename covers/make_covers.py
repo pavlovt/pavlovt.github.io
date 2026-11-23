@@ -241,6 +241,27 @@ def ccdv_art(accent, vol):
     return "\n".join(p), (cx, cy)
 
 
+# BraceML: nested braces, each pair one level of markup, over faint template code
+def braceml_art(accent):
+    cx, cy = 800, 820
+    code = ["nav.menu > ul {", "  li > a href=/ 'Home'", "  li > a href=/shop 'Shop'", "}",
+            "if users.length == 0 {", "  p.muted 'No users yet'", "} else {", "  ul {",
+            "    each users as user (user.id) {", "      li > a '{user.name}'", "    }", "  }", "}"]
+    p = [f'<linearGradient id="brace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8f5dc"/><stop offset="1" stop-color="{accent}"/></linearGradient>']
+    for i, line in enumerate(code * 2):
+        p.append(f'<text x="90" y="{140 + i * 62}" font-family="Consolas, monospace" font-size="38" fill="#9aa0ad" opacity=".11" xml:space="preserve">{line.replace(">", "&gt;")}</text>')
+    levels = 6
+    for k in range(levels):
+        size = 1500 - k * 210
+        half = 620 - k * 95
+        op = 0.18 + 0.82 * (k + 1) / levels
+        fill = "url(#brace)" if k >= levels - 3 else accent
+        for ch, x in (("{", cx - half), ("}", cx + half)):
+            p.append(f'<text x="{x}" y="{cy}" text-anchor="middle" dominant-baseline="central" font-family="S3" font-weight="400" font-size="{size}" fill="{fill}" opacity="{op:.2f}">{ch}</text>')
+    p.append(f'<circle cx="{cx}" cy="{cy}" r="120" fill="{accent}" opacity=".16"/><circle cx="{cx}" cy="{cy}" r="34" fill="{accent}"/><circle cx="{cx}" cy="{cy}" r="11" fill="#fff"/>')
+    return "\n".join(p), (cx, cy)
+
+
 NOTE = "Not affiliated with or endorsed by Anthropic."
 CCDV = "#7c8cff"
 
@@ -255,6 +276,7 @@ def build():
         ("ccdv-f-vol1", lambda a: ccdv_art(a, 1), CCDV, "STUDY HANDBOOK · VOLUME I", "CCDV-F", "A Study Handbook", "Claude Certified Developer – Foundations", {"note": NOTE, "size2": 130}),
         ("ccdv-f-vol2", lambda a: ccdv_art(a, 2), CCDV, "STUDY HANDBOOK · VOLUME II", "CCDV-F", "Depth in the Heavy Domains", "Claude Certified Developer – Foundations", {"note": NOTE, "size2": 112}),
         ("ccdv-f-vol3", lambda a: ccdv_art(a, 3), CCDV, "STUDY HANDBOOK · VOLUME III", "CCDV-F", "Twelve Advanced Mock Exams", "Claude Certified Developer – Foundations", {"note": NOTE, "size2": 112}),
+        ("braceml", braceml_art, "#3ddc97", "A BRACE-BASED TEMPLATE LANGUAGE", "BraceML", "No closing tags", "Compiles to HTML, Svelte 5 and React", {"size2": 150}),
     ]
     full = HERE / "full"
     full.mkdir(exist_ok=True)

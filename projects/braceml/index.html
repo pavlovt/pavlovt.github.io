@@ -7,7 +7,7 @@
 <script>try { document.querySelector('meta[name="color-scheme"]').content = localStorage.getItem('color-scheme') ?? 'light dark'; } catch {}</script>
 <title>BraceML · pavlovt</title>
 <meta name="description" content="BraceML is a brace-based HTML template language that compiles to HTML, Svelte 5 and React. Includes an online HTML to BraceML converter.">
-<link rel="stylesheet" href="../../style.css?v=4">
+<link rel="stylesheet" href="../../style.css?v=5">
 <script src="../../theme.js" defer></script>
 </head>
 <body>
@@ -29,13 +29,18 @@
 </header>
 
 <main class="wrap">
-  <h1>BraceML</h1>
-  <p class="lead"><strong>HTML templates without the boilerplate.</strong> BraceML is a brace-based template language: <code>{ }</code> wraps an element's children, the way SCSS wraps CSS rules. It compiles to plain HTML, Svelte 5 and React at build time, so browsers and frameworks never see it.</p>
+  <div class="hero">
+    <div>
+    <h1>BraceML</h1>
+    <p class="lead"><strong>HTML templates without the boilerplate.</strong> BraceML is a brace-based template language: <code>{ }</code> wraps an element's children, the way SCSS wraps CSS rules. It compiles to plain HTML, Svelte 5 and React at build time, so browsers and frameworks never see it.</p>
 
-  <div class="actions">
-    <a class="button" href="#converter">Convert HTML to BraceML</a>
-    <a class="button secondary" href="https://github.com/pavlovt/braceml">Source on GitHub</a>
-    <a class="button secondary" href="https://github.com/pavlovt/braceml/blob/main/docs/language.md">Language guide</a>
+    <div class="actions">
+      <a class="button" href="#converter">Convert HTML to BraceML</a>
+      <a class="button secondary" href="https://github.com/pavlovt/braceml">Source on GitHub</a>
+      <a class="button secondary" href="https://github.com/pavlovt/braceml/blob/main/docs/language.md">Language guide</a>
+    </div>
+    </div>
+    <img class="hero-cover" src="../../covers/braceml.png" width="300" height="450" alt="">
   </div>
 
   <h2>No closing tags</h2>
