@@ -262,16 +262,23 @@ def braceml_art(accent):
     return "\n".join(p), (cx, cy)
 
 
-def braceml_banner(accent="#3ddc97"):
-    """A 2400x800 banner for the top of the braceml README, in the cover's style."""
-    w, h, cx, cy = 2400, 800, 1720, 400
-    code = ["nav.menu > ul {", "  li > a href=/ 'Home'", "  li > a href=/shop 'Shop'", "}",
-            "if users.length == 0 {", "  p.muted 'No users yet'", "} else {", "  ul {",
-            "    each users as user (user.id) {", "      li > a '{user.name}'", "    }", "  }", "}"]
+BANNER_CODE = ["nav.menu > ul {", "  li > a href=/ 'Home'", "  li > a href=/shop 'Shop'", "}",
+               "if users.length == 0 {", "  p.muted 'No users yet'", "} else {", "  ul {",
+               "    each users as user (user.id) {", "      li > a '{user.name}'", "    }", "  }", "}"]
+
+
+def code_backdrop():
+    """Faint BraceML code across the whole banner."""
     p = []
     for col, x in enumerate((90, 900, 1710)):
-        for i, line in enumerate(code[col * 4:] + code[:col * 4]):
+        for i, line in enumerate(BANNER_CODE[col * 4:] + BANNER_CODE[:col * 4]):
             p.append(f'<text x="{x}" y="{80 + i * 58}" font-family="Consolas, monospace" font-size="36" fill="#9aa0ad" opacity=".1" xml:space="preserve">{line.replace(">", "&gt;")}</text>')
+    return "".join(p)
+
+
+def braces_banner_art(accent, light, centre="dot", cx=1720, cy=400):
+    """Nested braces for a banner, with a dot or a shopping bag at the centre."""
+    p = [f'<linearGradient id="brace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{light}"/><stop offset="1" stop-color="{accent}"/></linearGradient>']
     for k in range(6):
         size = (1500 - k * 210) * 0.58
         half = (620 - k * 95) * 0.6
@@ -279,32 +286,75 @@ def braceml_banner(accent="#3ddc97"):
         fill = "url(#brace)" if k >= 3 else accent
         for ch, x in (("{", cx - half), ("}", cx + half)):
             p.append(f'<text x="{x:.0f}" y="{cy}" text-anchor="middle" dominant-baseline="central" font-family="S3" font-size="{size:.0f}" fill="{fill}" opacity="{op:.2f}">{ch}</text>')
-    p.append(f'<circle cx="{cx}" cy="{cy}" r="80" fill="{accent}" opacity=".16"/><circle cx="{cx}" cy="{cy}" r="24" fill="{accent}"/><circle cx="{cx}" cy="{cy}" r="8" fill="#fff"/>')
+    p.append(f'<circle cx="{cx}" cy="{cy}" r="80" fill="{accent}" opacity=".16"/>')
+    if centre == "bag":
+        p.append(f'<path d="M{cx - 30} {cy - 14} a30 30 0 0 1 60 0" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>'
+                 f'<rect x="{cx - 44}" y="{cy - 16}" width="88" height="72" rx="10" fill="{accent}"/>'
+                 f'<circle cx="{cx - 18}" cy="{cy + 4}" r="6" fill="#fff"/><circle cx="{cx + 18}" cy="{cy + 4}" r="6" fill="#fff"/>')
+    else:
+        p.append(f'<circle cx="{cx}" cy="{cy}" r="24" fill="{accent}"/><circle cx="{cx}" cy="{cy}" r="8" fill="#fff"/>')
+    return code_backdrop() + "".join(p)
+
+
+def covers_fan_art(names, height, span, cx=1760, cy=400):
+    """The given covers fanned out, each overlapping the one to its left so every title shows."""
+    w = height * 2 / 3
+    n = len(names)
+    mid = (n - 1) / 2
+    items = []
+    for i, name in enumerate(names):
+        off = (i - mid) / mid if n > 1 else 0
+        x = cx + off * span / 2
+        y = cy + 26 * abs(off)
+        href = (HERE / "full" / f"{name}.png").as_uri()
+        items.append((abs(off), f'<g transform="translate({x:.0f} {y:.0f}) rotate({off * 9:.1f})"><image href="{href}" x="{-w / 2:.0f}" y="{-height / 2:.0f}" width="{w:.0f}" height="{height}" filter="url(#lift)"/></g>'))
+    return "".join(svg for _, svg in items)
+
+
+def banner(accent, art, label, title, line2, title_size=250, note="", glow_x=1720):
+    """A 2400x800 README banner in the cover style: text on the left, art on the right."""
+    w, h = 2400, 800
+    note_svg = f'<text x="150" y="740" font-size="30" fill="#6c707c">{note}</text>' if note else ""
     return head() + f"""
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}">
 <defs>
-  <radialGradient id="glow" cx="{cx}" cy="{cy}" r="1100" gradientUnits="userSpaceOnUse">
+  <radialGradient id="glow" cx="{glow_x}" cy="400" r="1100" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="{accent}" stop-opacity=".45"/>
     <stop offset=".4" stop-color="{accent}" stop-opacity=".1"/>
     <stop offset="1" stop-color="{accent}" stop-opacity="0"/>
   </radialGradient>
-  <linearGradient id="brace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8f5dc"/><stop offset="1" stop-color="{accent}"/></linearGradient>
   <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="{BG}" stop-opacity=".85"/><stop offset=".45" stop-color="{BG}" stop-opacity=".5"/><stop offset=".6" stop-color="{BG}" stop-opacity="0"/>
   </linearGradient>
+  <filter id="lift" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000" flood-opacity=".6"/></filter>
 </defs>
 <rect width="{w}" height="{h}" fill="{BG}"/>
 <rect width="{w}" height="{h}" fill="url(#glow)"/>
-{"".join(p)}
-<rect width="{w}" height="{h}" fill="url(#shade)"/>
+{art}
+<rect width="{w}" height="{h}" fill="url(#shade)" opacity="{0 if "image" in art else 1}"/>
 <g font-family="S3">
-  <text x="150" y="255" font-size="44" font-weight="700" letter-spacing="10" fill="{accent}">A BRACE-BASED TEMPLATE LANGUAGE</text>
-  <text x="138" y="470" font-size="250" font-weight="700" fill="#fff" letter-spacing="-5">BraceML</text>
-  <text x="145" y="605" font-size="120" fill="#fff" letter-spacing="-2">No closing tags</text>
+  <text x="150" y="255" font-size="44" font-weight="700" letter-spacing="10" fill="{accent}">{label}</text>
+  <text x="138" y="470" font-size="{title_size}" font-weight="700" fill="#fff" letter-spacing="-5">{title}</text>
+  <text x="145" y="605" font-size="120" fill="#fff" letter-spacing="-2">{line2}</text>
   <rect x="150" y="650" width="200" height="11" fill="{accent}"/>
+  {note_svg}
 </g>
 </svg>"""
 
+
+def banners():
+    """README banners for the repos on the site; each is copied into its repo by hand."""
+    books = ["svelte-5-in-depth", "sveltekit-3-in-depth", "astro-7-in-depth", "sveltekit-interview-prep", "living-well-with-type-2-diabetes"]
+    return {
+        "braceml-banner": banner("#3ddc97", braces_banner_art("#3ddc97", "#b8f5dc"),
+                                 "A BRACE-BASED TEMPLATE LANGUAGE", "BraceML", "No closing tags"),
+        "brace-store-banner": banner("#f5b942", braces_banner_art("#f5b942", "#ffe7b0", centre="bag", cx=1880),
+                                     "A SVELTEKIT STORE · BRACEML VS HTML", "brace-store", "One store, two templates", title_size=220, glow_x=1880),
+        "compiled-books-banner": banner("#ff6a3d", covers_fan_art(books, 460, 760, cx=1860),
+                                        "TECHNICAL BOOKS · EPUB", "Compiled Books", "Svelte, SvelteKit, Astro", title_size=165, glow_x=1860),
+        "ccdv-f-handbook-banner": banner(CCDV, covers_fan_art(["ccdv-f-vol1", "ccdv-f-vol2", "ccdv-f-vol3"], 600, 640),
+                                         "THREE VOLUMES · 1,007 QUESTIONS", "CCDV-F", "Study Handbook", note=NOTE, glow_x=1760),
+    }
 
 NOTE = "Not affiliated with or endorsed by Anthropic."
 CCDV = "#7c8cff"
@@ -338,15 +388,16 @@ def build():
                                 f"--screenshot={out}", page.as_uri()],
                                check=True, capture_output=True)
             print(name)
-        # README banner for pavlovt/braceml: copy it to docs/images/banner.png there
-        page = Path(tmp) / "braceml-banner.html"
-        page.write_text(braceml_banner(), encoding="utf-8")
-        subprocess.run([str(CHROME), "--headless=new", "--disable-gpu", "--hide-scrollbars",
-                        "--allow-file-access-from-files", "--force-device-scale-factor=1",
-                        "--window-size=2400,800", "--virtual-time-budget=3000",
-                        f"--screenshot={full / 'braceml-banner.png'}", page.as_uri()],
-                       check=True, capture_output=True)
-        print("braceml-banner")
+        # README banners for the repos on the site: copy each to its repo
+        for name, html in banners().items():
+            page = Path(tmp) / f"{name}.html"
+            page.write_text(html, encoding="utf-8")
+            subprocess.run([str(CHROME), "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                            "--allow-file-access-from-files", "--force-device-scale-factor=1",
+                            "--window-size=2400,800", "--virtual-time-budget=3000",
+                            f"--screenshot={full / f'{name}.png'}", page.as_uri()],
+                           check=True, capture_output=True)
+            print(name)
 
 
 if __name__ == "__main__":
