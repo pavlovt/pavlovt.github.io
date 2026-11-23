@@ -230,11 +230,14 @@ ul.features li { margin-bottom: 0.3rem; }
   .book-list img { transition: transform 0.2s ease; }
   .book-list a:hover img { transform: translateY(-3px); }
 }
+/* on phones the download button moves under the description, beside the cover */
 @media (width < 40rem) {
-  .book-list td { padding-right: 0.75rem; font-size: 0.92rem; }
-  .book-list td.cover, .book-list img { width: 4.5rem; }
-  .book-list td.get { white-space: normal; }
-  .book-list td.get .button { padding: 0.4rem 0.6rem; font-size: 0.85rem; text-align: center; }
+  .book-list, .book-list tbody { display: block; }
+  .book-list tr { display: grid; grid-template-columns: 4.5rem 1fr; column-gap: 0.9rem; padding-block: 0.9rem; }
+  .book-list td { display: block; padding: 0; font-size: 0.92rem; }
+  .book-list td.cover { grid-row: span 2; width: auto; }
+  .book-list img { width: 4.5rem; margin-inline: 0; }
+  .book-list td.get { grid-column: 2; text-align: left; margin-top: 0.6rem; }
 }
 
 /* home page cards: a strip of covers */
