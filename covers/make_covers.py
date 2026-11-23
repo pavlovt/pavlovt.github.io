@@ -285,9 +285,11 @@ def build():
             art, glow = art_fn(accent)
             page = Path(tmp) / f"{name}.html"
             page.write_text(cover(art, accent, glow, label, l1, l2, sub, **extra), encoding="utf-8")
-            for out, size in ((HERE / f"{name}.png", "300,450"), (full / f"{name}.png", "1600,2400")):
+            # Headless Chrome has a minimum window width, so a 300px window would crop the
+            # cover; the small one is rendered at 600x900 and scaled down by half instead.
+            for out, size, scale in ((HERE / f"{name}.png", "600,900", "0.5"), (full / f"{name}.png", "1600,2400", "1")):
                 subprocess.run([str(CHROME), "--headless=new", "--disable-gpu", "--hide-scrollbars",
-                                "--allow-file-access-from-files", "--force-device-scale-factor=1",
+                                "--allow-file-access-from-files", f"--force-device-scale-factor={scale}",
                                 f"--window-size={size}", "--virtual-time-budget=3000",
                                 f"--screenshot={out}", page.as_uri()],
                                check=True, capture_output=True)

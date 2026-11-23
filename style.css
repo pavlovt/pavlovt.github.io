@@ -213,10 +213,11 @@ ul.features li { margin-bottom: 0.3rem; }
 /* book list: one book per row, cover | description | download */
 .book-list { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
 .book-list td { border: 0; padding: 0.9rem 1.5rem 0.9rem 0; vertical-align: middle; }
-.book-list td.cover { width: 5.5rem; }
+.book-list td.cover { width: 6.6rem; text-align: center; }
 .book-list img {
   display: block;
-  width: 5.5rem;
+  width: 6.6rem;
+  margin-inline: auto;
   height: auto;
   aspect-ratio: 2 / 3;
   border-radius: 4px;
@@ -231,7 +232,7 @@ ul.features li { margin-bottom: 0.3rem; }
 }
 @media (width < 40rem) {
   .book-list td { padding-right: 0.75rem; font-size: 0.92rem; }
-  .book-list td.cover, .book-list img { width: 3.75rem; }
+  .book-list td.cover, .book-list img { width: 4.5rem; }
   .book-list td.get { white-space: normal; }
   .book-list td.get .button { padding: 0.4rem 0.6rem; font-size: 0.85rem; text-align: center; }
 }
@@ -261,4 +262,10 @@ ul.features li { margin-bottom: 0.3rem; }
 @media (width < 40rem) {
   .hero { flex-direction: column-reverse; gap: 1.25rem; }
   .hero-cover { width: 6rem; }
+}
+
+/* covers are dark, so a hairline frame shows their full shape on a dark page */
+.book-list img, .card .covers img, .hero-cover {
+  outline: 1px solid light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.16));
+  outline-offset: -1px;
 }
