@@ -7,7 +7,7 @@
 <script>try { document.querySelector('meta[name="color-scheme"]').content = localStorage.getItem('color-scheme') ?? 'light dark'; } catch {}</script>
 <title>pavlovt · Projects</title>
 <meta name="description" content="Projects by pavlovt: the CCDV-F study handbook, compiled technical books on Svelte, SvelteKit and Astro, and the BraceML template language.">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=4">
 <script src="theme.js" defer></script>
 </head>
 <body>
@@ -34,6 +34,7 @@
 
   <div class="cards">
     <article class="card">
+      <a class="covers" href="projects/ccdv-f-handbook/" tabindex="-1" aria-hidden="true"><img src="covers/ccdv-f-vol1.png" width="300" height="450" alt=""><img src="covers/ccdv-f-vol2.png" width="300" height="450" alt=""><img src="covers/ccdv-f-vol3.png" width="300" height="450" alt=""></a>
       <span class="tag">Study handbook · EPUB</span>
       <h2>CCDV-F Handbook</h2>
       <p>A three-volume study handbook for the Claude Certified Developer – Foundations exam, with 1,007 practice questions and answer keys.</p>
@@ -44,6 +45,7 @@
     </article>
 
     <article class="card">
+      <a class="covers" href="projects/compiled-books/" tabindex="-1" aria-hidden="true"><img src="covers/svelte-5-in-depth.png" width="300" height="450" alt=""><img src="covers/sveltekit-3-in-depth.png" width="300" height="450" alt=""><img src="covers/astro-7-in-depth.png" width="300" height="450" alt=""><img src="covers/sveltekit-interview-prep.png" width="300" height="450" alt=""><img src="covers/living-well-with-type-2-diabetes.png" width="300" height="450" alt=""></a>
       <span class="tag">Technical books · EPUB</span>
       <h2>Compiled Books</h2>
       <p>In-depth books on Svelte 5, SvelteKit 3 and Astro 7, a SvelteKit interview-prep course with interactive quizzes, and more.</p>
@@ -54,6 +56,9 @@
     </article>
 
     <article class="card">
+      <pre class="card-code" aria-hidden="true"><code>nav.menu &gt; ul {
+  li &gt; a href=/ 'Home'
+}</code></pre>
       <span class="tag">Template language · npm</span>
       <h2>BraceML</h2>
       <p>HTML templates without the boilerplate. A brace-based template language that compiles to HTML, Svelte 5 and React.</p>

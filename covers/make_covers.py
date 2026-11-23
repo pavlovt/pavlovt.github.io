@@ -2,7 +2,7 @@
 
     python covers/make_covers.py
 
-Writes covers/<book>.png (720x1080) for the site, and full-size 1600x2400 PNGs
+Writes covers/<book>.png (300x450) for the site, and full-size 1600x2400 PNGs
 into covers/full/ (not committed) for use as EPUB covers. Needs Google Chrome
 for rendering and the Source Sans 3 fonts from the compiled-books repo.
 """
@@ -263,7 +263,7 @@ def build():
             art, glow = art_fn(accent)
             page = Path(tmp) / f"{name}.html"
             page.write_text(cover(art, accent, glow, label, l1, l2, sub, **extra), encoding="utf-8")
-            for out, size in ((HERE / f"{name}.png", "720,1080"), (full / f"{name}.png", "1600,2400")):
+            for out, size in ((HERE / f"{name}.png", "300,450"), (full / f"{name}.png", "1600,2400")):
                 subprocess.run([str(CHROME), "--headless=new", "--disable-gpu", "--hide-scrollbars",
                                 "--allow-file-access-from-files", "--force-device-scale-factor=1",
                                 f"--window-size={size}", "--virtual-time-budget=3000",
