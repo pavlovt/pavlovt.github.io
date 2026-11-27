@@ -1,6 +1,7 @@
 """Generate the geometric book covers shown on the site.
 
-    python covers/make_covers.py
+    python covers/make_covers.py            # every cover and banner
+    python covers/make_covers.py kvesto     # only the named ones
 
 Writes covers/<book>.png (300x450) for the site, and full-size 1600x2400 PNGs
 into covers/full/ (not committed) for use as EPUB covers. Needs Google Chrome
@@ -262,6 +263,36 @@ def braceml_art(accent):
     return "\n".join(p), (cx, cy)
 
 
+def kvesto_art(accent):
+    """A survey card: questions with radio buttons and checkboxes, and result bars."""
+    cx, cy = 800, 800
+    p = [f'<linearGradient id="bar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="{accent}"/></linearGradient>']
+    # the card, tilted slightly
+    p.append(f'<g transform="rotate(-6 {cx} {cy})">')
+    p.append(f'<rect x="300" y="250" width="1000" height="1150" rx="56" fill="#1b1e27" stroke="{accent}" stroke-opacity=".45" stroke-width="6"/>')
+    p.append('<rect x="380" y="340" width="520" height="40" rx="20" fill="#c4c7d0" opacity=".85"/>')
+    # a single-choice question: the second option is picked
+    for i in range(3):
+        y = 470 + i * 110
+        p.append(f'<circle cx="420" cy="{y}" r="30" fill="none" stroke="#9aa0ad" stroke-width="7"/>')
+        if i == 1:
+            p.append(f'<circle cx="420" cy="{y}" r="15" fill="{accent}"/>')
+        p.append(f'<rect x="480" y="{y - 14}" width="{[420, 520, 340][i]}" height="28" rx="14" fill="#6c707c" opacity=".7"/>')
+    # a multiple-choice question: two boxes ticked
+    p.append('<rect x="380" y="820" width="440" height="40" rx="20" fill="#c4c7d0" opacity=".85"/>')
+    for i in range(2):
+        y = 950 + i * 110
+        p.append(f'<rect x="390" y="{y - 30}" width="60" height="60" rx="12" fill="{accent}"/>')
+        p.append(f'<path d="M403 {y} l15 16 l28 -32" fill="none" stroke="#121318" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>')
+        p.append(f'<rect x="480" y="{y - 14}" width="{[480, 380][i]}" height="28" rx="14" fill="#6c707c" opacity=".7"/>')
+    p.append('</g>')
+    # results: bars rising out of the card
+    for i, h in enumerate((260, 420, 330, 560)):
+        x = 980 + i * 120
+        p.append(f'<rect x="{x}" y="{1240 - h}" width="84" height="{h}" rx="16" fill="url(#bar)" opacity="{0.55 + i * 0.15:.2f}"/>')
+    return "\n".join(p), (cx + 300, cy - 200)
+
+
 BANNER_CODE = ["nav.menu > ul {", "  li > a href=/ 'Home'", "  li > a href=/shop 'Shop'", "}",
                "if users.length == 0 {", "  p.muted 'No users yet'", "} else {", "  ul {",
                "    each users as user (user.id) {", "      li > a '{user.name}'", "    }", "  }", "}"]
@@ -360,7 +391,7 @@ NOTE = "Not affiliated with or endorsed by Anthropic."
 CCDV = "#7c8cff"
 
 
-def build():
+def build(only=()):
     specs = [
         ("svelte-5-in-depth", svelte_art, "#ff3e00", "A SENIOR ENGINEER'S GUIDE", "Svelte 5", "in Depth", "Runes, the compiler and reactivity internals", {}),
         ("sveltekit-3-in-depth", sveltekit_art, "#ff9a1f", "A SENIOR ENGINEER'S GUIDE", "SvelteKit 3", "in Depth", "Routing, data, remote functions and deployment", {}),
@@ -371,11 +402,14 @@ def build():
         ("ccdv-f-vol2", lambda a: ccdv_art(a, 2), CCDV, "STUDY HANDBOOK · VOLUME II", "CCDV-F", "Depth in the Heavy Domains", "Claude Certified Developer – Foundations", {"note": NOTE, "size2": 112}),
         ("ccdv-f-vol3", lambda a: ccdv_art(a, 3), CCDV, "STUDY HANDBOOK · VOLUME III", "CCDV-F", "Twelve Advanced Mock Exams", "Claude Certified Developer – Foundations", {"note": NOTE, "size2": 112}),
         ("braceml", braceml_art, "#3ddc97", "A BRACE-BASED TEMPLATE LANGUAGE", "BraceML", "No closing tags", "Compiles to HTML, Svelte 5 and React", {"size2": 150}),
+        ("kvesto", kvesto_art, "#38bdf8", "OPEN SOURCE SURVEYS", "Kvesto", "Surveys from JSON", "Render anywhere. Editor and dashboard included.", {"size2": 150}),
     ]
     full = HERE / "full"
     full.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
         for name, art_fn, accent, label, l1, l2, sub, extra in specs:
+            if only and name not in only:
+                continue
             art, glow = art_fn(accent)
             page = Path(tmp) / f"{name}.html"
             page.write_text(cover(art, accent, glow, label, l1, l2, sub, **extra), encoding="utf-8")
@@ -390,6 +424,8 @@ def build():
             print(name)
         # README banners for the repos on the site: copy each to its repo
         for name, html in banners().items():
+            if only and name not in only:
+                continue
             page = Path(tmp) / f"{name}.html"
             page.write_text(html, encoding="utf-8")
             subprocess.run([str(CHROME), "--headless=new", "--disable-gpu", "--hide-scrollbars",
@@ -401,4 +437,5 @@ def build():
 
 
 if __name__ == "__main__":
-    build()
+    import sys
+    build(sys.argv[1:])
